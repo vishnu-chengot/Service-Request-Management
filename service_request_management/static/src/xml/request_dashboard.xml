@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<template>
+    <t t-name="RequestStatusDashboard">
+        <div class="request-status-dashboard">
+            <div class="dashboard-header">
+                <h3>Request Status Overview</h3>
+            </div>
+            <div id="status_cards_container" class="status-cards-container">
+                <!-- Status cards will be populated by JavaScript -->
+            </div>
+        </div>
+    </t>
+</template>

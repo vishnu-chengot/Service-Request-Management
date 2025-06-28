@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="service_req_id" model="ir.sequence">
+        <field name="name">name</field>
+        <field name="code">service.request</field>
+        <field name="prefix">SRQ</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="service_request_tree_view" model="ir.ui.view">
+        <field name="name">Service Request Tree View</field>
+        <field name="model">service.request</field>
+        <field name="arch" type="xml">
+            <tree string="Service Requests">
+                <field name="name" optional="show"/>
+                <field name="request_date" optional="show"/>
+                <field name="customer_id" optional="show"/>
+                <field name="priority" optional="show"/>
+                <field name="category" optional="show"/>
+                <field name="description" optional="hide"/>
+                <field name="assigned_to" optional="show"/>
+                <field name="state" optional="show" widget="badge" decoration-danger="state == 'cancelled'" decoration-warning="state == 'in_progress'"
+                                        decoration-success="state=='done'" decoration-primary="state == 'draft'" decoration-info="state == 'assigned'"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="service_request_form_view" model="ir.ui.view">
+        <field name="name">Service Request Form View</field>
+        <field name="model">service.request</field>
+        <field name="arch" type="xml">
+            <form string="Service Request Form">
+                <header>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,assigned,in_progress,done,cancelled" options="{'clickable': True}"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-warning" attrs="{'invisible': [('active', '=', True)]}"/>
+                    <widget name="web_ribbon" title="Cancelled" bg_color="bg-danger" attrs="{'invisible': [('state', '!=', 'cancelled')]}"/>
+                    <widget name="web_ribbon" title="Completed" bg_color="bg-success" attrs="{'invisible': [('state', '!=', 'done')]}" />
+                    <div class="oe_title mb24">
+                        <h1>
+                            <field name="name" class="text-break" placeholder="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="customer_id" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                            <field name="priority" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                            <field name="category" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                            <field name="description" placeholder="description.." attrs="{'readonly': [('state', '=', 'done')]}"/>
+                        </group>
+                        <group>
+                            <field name="request_date" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                            <t groups="service_request_management.group_service_manager">
+                                <field name="assigned_to" attrs="{'readonly': [('state', '=', 'done')],'required':[('state', 'in', ['done','assigned','in_progress','cancelled'])]}"/>
+                            </t>
+                            <t groups="service_request_management.group_service_user,!service_request_management.group_service_manager">
+                                <field name="assigned_to" readonly="1"/>
+                            </t>
+                        </group>
+                        <field name="active" invisible="1"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids" options="{'post_refresh': 'recipients'}"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="service_request_kanban_view" model="ir.ui.view">
+        <field name="name">Service Request Kanban View</field>
+        <field name="model">service.request</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" group_expand="_expand_states">
+                <field name="name"/>
+                <field name="customer_id"/>
+                <field name="priority"/>
+                <field name="category"/>
+                <field name="assigned_to"/>
+                <field name="request_date"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div class="oe_kanban_details">
+                                    <strong>
+                                        <field name="name"/>
+                                    </strong>
+                                    <div class="text-muted">
+                                        <field name="customer_id"/>
+                                    </div>
+                                    <div class="oe_kanban_bottom_left">
+                                        <field name="priority" widget="priority"/>
+                                        <field name="category" widget="badge" decoration-danger="category == 'complaint'" decoration-warning="category == 'repair'" decoration-success="category=='installation'"/>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <field name="assigned_to" widget="many2one_avatar_user"/>
+                                        <field name="request_date"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="service_request_search_view" model="ir.ui.view">
+        <field name="name">Service Request Search View</field>
+        <field name="model">service.request</field>
+        <field name="arch" type="xml">
+            <search string="Search Service Requests">
+                <field name="name"/>
+                <field name="customer_id"/>
+                <field name="priority"/>
+                <filter name="active" string="Active" domain="[('active', '=', True)]"/>
+                <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
+
+                <separator/>
+                <group expand="0" string="State">
+                    <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                    <filter name="assigned" string="Assigned" domain="[('state', '=', 'assigned')]"/>
+                    <filter name="in_progress" string="In Progress" domain="[('state', '=', 'in_progress')]"/>
+                    <filter name="done" string="Done" domain="[('state', '=', 'done')]"/>
+                    <filter name="cancelled" string="Cancelled" domain="[('state', '=', 'cancelled')]"/>
+                </group>
+
+                <!-- Category Filters -->
+                <separator/>
+                <group expand="0" string="Category">
+                    <filter name="repair" string="Repair" domain="[('category', '=', 'repair')]"/>
+                    <filter name="installation" string="Installation" domain="[('category', '=', 'installation')]"/>
+                    <filter name="complaint" string="Complaint" domain="[('category', '=', 'complaint')]"/>
+                </group>
+
+                <!-- Priority Filters -->
+                <separator/>
+                <group expand="0" string="Priority">
+                    <filter name="low_priority" string="Low" domain="[('priority', '=', 'low')]"/>
+                    <filter name="medium_priority" string="Medium" domain="[('priority', '=', 'medium')]"/>
+                    <filter name="high_priority" string="High" domain="[('priority', '=', 'high')]"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="service_request_action" model="ir.actions.act_window">
+        <field name="name">Service Requests</field>
+        <field name="res_model">service.request</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_id" ref="service_request_tree_view"/>
+        <field name="search_view_id" ref="service_request_search_view"/>
+        <field name="context">{'default_active': True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Manage your service requests efficiently.
+            </p>
+            <p>
+                Use this interface to create, view, and manage service requests.
+            </p>
+        </field>
+    </record>
+
+
+
+    <menuitem id="service_request_root" name="Service" sequence="1" web_icon="service_request_management,static/description/icon.png" groups="service_request_management.group_service_manager,service_request_management.group_service_user"/>
+    <menuitem id="service_request_menu" name="Service Requests" parent="service_request_root" sequence="1" groups="service_request_management.group_service_manager,service_request_management.group_service_user"/>
+    <menuitem id="service_request_menu_item" name="Requests Management" parent="service_request_menu" action="service_request_action" sequence="1" groups="service_request_management.group_service_manager,service_request_management.group_service_user"/>
+
+</odoo>

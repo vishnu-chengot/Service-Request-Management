@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="email_template_service_request_assignment" model="mail.template">
+        <field name="name">Service Request Assignment</field>
+        <field name="model_id" ref="model_service_request"/>
+        <field name="subject">Service Request Assignment: {{object.name}}</field>
+        <field name="email_to">{{object.assigned_to.email}}</field>
+        <field name="body_html" type="html">
+            <p>Dear <t t-esc="object.assigned_to.name"/>,</p>
+            <p>A service request <strong><t t-esc="object.name"/></strong> has been <strong>assigned</strong> to you.
+            </p>
+            <p>
+                <strong>Customer:</strong>
+                <t t-esc="object.customer_id.name"/>
+            </p>
+            <p>
+                <strong>Category:</strong>
+                <t t-esc="object.category"/>
+            </p>
+            <p>
+                <strong>Priority:</strong>
+                <t t-esc="object.priority"/>
+            </p>
+            <p>
+                <strong>Description:</strong>
+                <t t-esc="object.description or 'No description provided'"/>
+            </p>
+            <p>You can view the details
+                <a t-attf-href="/web#model={{ object._name }}&amp;id={{ object.id }}&amp;view_type=form"
+                   style="background-color: #007cba; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px;">
+                    View Service Request
+                </a>
+            </p>
+            <p>Best regards,<br/>Service Request Management System
+            </p>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+</odoo>

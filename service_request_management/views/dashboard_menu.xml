@@ -1,0 +1,18 @@
+<odoo>
+    <data>
+        <!-- Dashboard Action -->
+        <record id="action_request_status_dashboard" model="ir.actions.client">
+            <field name="name">Request Status Dashboard</field>
+            <field name="tag">request_status_dashboard</field>
+        </record>
+
+        <!-- Menu Item -->
+        <menuitem
+            id="menu_request_status_dashboard"
+            name="Request Dashboard"
+            parent="service_request_management.service_request_root"
+            action="action_request_status_dashboard"
+            sequence="2"
+            groups="service_request_management.group_service_manager"/>
+    </data>
+</odoo>

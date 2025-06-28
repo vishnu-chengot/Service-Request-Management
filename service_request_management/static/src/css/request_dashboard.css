@@ -1,0 +1,70 @@
+.request-status-dashboard {
+    padding: 20px;
+    background: #f9f9f9;
+    min-height: 400px;
+}
+
+.dashboard-header h3 {
+    margin: 0 0 20px 0;
+    color: #333;
+    font-weight: 500;
+}
+
+.status-cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.status-card {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 15px 20px;
+    min-width: 120px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.status-card:hover {
+    border-color: #007cba;
+    box-shadow: 0 2px 8px rgba(0,124,186,0.15);
+    transform: translateY(-1px);
+}
+
+.status-name {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+    text-transform: capitalize;
+}
+
+.status-count {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+.no-data-container {
+text-align: center;
+padding: 60px 20px;
+color: #666;
+width: 100%;
+}
+
+.no-data-icon {
+font-size: 48px;
+margin-bottom: 16px;
+}
+
+.no-data-message {
+font-size: 18px;
+font-weight: 500;
+margin-bottom: 8px;
+color: #333;
+}
+
+.no-data-subtitle {
+font-size: 14px;
+color: #888;
+}
