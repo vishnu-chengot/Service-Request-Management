@@ -49,6 +49,7 @@ Clickable status cards redirect to filtered tree view
 
 Graceful "no data" message if there are no requests
 
-[Screenshot from 2025-06-28 23-40-46](https://github.com/user-attachments/assets/abfb8da1-f6ff-4c0f-a64b-4e90f59ffb88)
+![Screenshot from 2025-06-28 23-40-46](https://github.com/user-attachments/assets/09305a7b-5df6-4997-9c5c-41f5c219ae30)
+
 
 ![Screenshot from 2025-06-28 23-41-02](https://github.com/user-attachments/assets/219b703a-83cf-40b4-9e74-d44528d59d9c)
